@@ -1,22 +1,17 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class TypewriterEffect : MonoBehaviour
 {
-    [TextArea]
-    [SerializeField] String  text;
-    
+    [TextArea] [SerializeField] private string text;
+
     [SerializeField] private GameObject soundManager;
 
     // Cached components references.
     private TextMeshProUGUI _screenLabel;
     private AudioSource _audioSource;
-    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,11 +19,10 @@ public class TypewriterEffect : MonoBehaviour
         _audioSource = soundManager.GetComponent<AudioSource>();
         StartCoroutine(ShowText());
     }
-    
+
     // Update is called once per frame
     void Update()
     {
-        
     }
 
     private IEnumerator ShowText()
@@ -41,11 +35,13 @@ public class TypewriterEffect : MonoBehaviour
             {
                 if (character != ' ')
                 {
-                   _audioSource.PlayOneShot(_audioSource.clip);
+                    _audioSource.PlayOneShot(_audioSource.clip);
                 }
+
                 _screenLabel.text += character;
                 yield return timeBetweenDigits;
             }
+
             // After each sentence, we break the line.
             _screenLabel.text += "<br>";
         }
