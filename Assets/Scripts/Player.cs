@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -8,29 +9,40 @@ public class Player : MonoBehaviour
     
     [SerializeField] private float movementCooldown = 0.25f;
     [SerializeField] private float movementSpeed = 0.1f;
+
+    [SerializeField] private GameObject letterTextBox;
+
+    private LetterBoxController _letterBoxController;
     
     private bool _isMoving;
     private Map _map;
 
     private House _currTouchedHouse;
-    private Letter _currLetter;
-
+    
     // Start is called before the first frame update
     void Start()
     {
         _map = mapController.GetComponent<Map>();
+        _letterBoxController = letterTextBox.GetComponent<LetterBoxController>();
     }
 
     // Update is called once per frame
     void Update()
     {
 
-        // We can only move the player again once it reached the destination.
-        if (_isMoving)
+        // We check if we are currently showing a text from a letter delivery.
+        if (_letterBoxController.IsShowingLetterText && Input.GetKeyDown(KeyCode.Space))
+        {
+            _letterBoxController.HideText();
+        }
+
+        // We can only move the player again once it reached the destination
+        // or there is no text being shown.
+        if (_isMoving || _letterBoxController.IsShowingLetterText)
         {
             return;
         }
-        
+
         var horizontalMovement = Input.GetAxisRaw("Horizontal");
         var verticalMovement = Input.GetAxisRaw("Vertical");
 
@@ -49,10 +61,11 @@ public class Player : MonoBehaviour
         // we collect the letter.
         if (Input.GetKeyDown(KeyCode.Space) && _currTouchedHouse != null)
         {
-            // We can't collect a letter if a house isn't holding one...
-            if (_currTouchedHouse.CurrSendingLetter != null)
+            // We can't deliver a letter to a house that already received one...
+            if (_currTouchedHouse.IsReceivingLetter)
             {
-                _currTouchedHouse.CollectLetter();
+                _currTouchedHouse.DeliverLetter();
+                _letterBoxController.ShowText();
             }
         }
         

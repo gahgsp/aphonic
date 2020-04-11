@@ -1,25 +1,24 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
 
 public class House : MonoBehaviour
 {
-    public Letter CurrSendingLetter
+    
+    // TODO: Have different sprites here...
+    public GameObject letterSign;
+
+    // Every house starts receiving a letter
+    private bool _isReceivingLetter = true;
+
+    public bool IsReceivingLetter
     {
-        get => _currSendingLetter;
-        set => _currSendingLetter = value;
+        get => _isReceivingLetter;
+        set => _isReceivingLetter = value;
     }
-
-    // TODO: We need different sprites from receiving / sending a letter.
-    [SerializeField] private GameObject letterSign;
-
-    private bool _isReceivingLetter;
-    private bool _isSendingLetter;
-    private Letter _currSendingLetter;
-
-    private void Awake()
-    {
-        LetterSpawner.OnNewLetterSpawned += UpdateHouse;
-    }
-
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -29,22 +28,17 @@ public class House : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
-    }
-
-    private void UpdateHouse(Letter spawnedLetter)
-    {
-        if (spawnedLetter.FromHouse.Equals(gameObject))
+        if (_isReceivingLetter)
         {
             letterSign.SetActive(true);
-            _currSendingLetter = spawnedLetter;
+        }
+        else
+        {
+            letterSign.SetActive(false);
         }
     }
-
-    public void CollectLetter()
+    public void DeliverLetter()
     {
-        letterSign.SetActive(false);
-        _currSendingLetter.ToHouse.GetComponent<House>().letterSign.SetActive(true);
-        _currSendingLetter = null;
+        _isReceivingLetter = false;
     }
 }
