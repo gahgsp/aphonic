@@ -1,34 +1,25 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class House : MonoBehaviour
 {
     
-    // TODO: Have different sprites here...
     public GameObject letterSign;
 
     // Every house starts receiving a letter
-    private bool _isReceivingLetter = true;
-
-    public bool IsReceivingLetter
-    {
-        get => _isReceivingLetter;
-        set => _isReceivingLetter = value;
-    }
+    public bool IsReceivingLetter { get; set; } = true;
     
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     void Update()
     {
-        if (_isReceivingLetter)
+        UpdateLetterSignStatus();   
+    }
+
+    /// <summary>
+    /// Checks if the letter sign must be shown.
+    /// </summary>
+    private void UpdateLetterSignStatus()
+    {
+        if (IsReceivingLetter)
         {
             letterSign.SetActive(true);
         }
@@ -37,8 +28,13 @@ public class House : MonoBehaviour
             letterSign.SetActive(false);
         }
     }
+    
+    /// <summary>
+    /// Represents the deliver action.
+    /// Once a letter is delivered, the house is not receiving a letter anymore.
+    /// </summary>
     public void DeliverLetter()
     {
-        _isReceivingLetter = false;
+        IsReceivingLetter = false;
     }
 }

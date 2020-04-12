@@ -19,12 +19,7 @@ public class TypewriterEffect : MonoBehaviour
         _audioSource = soundManager.GetComponent<AudioSource>();
         StartCoroutine(ShowText());
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-    }
-
+    
     private IEnumerator ShowText()
     {
         var timeBetweenDigits = new WaitForSeconds(0.15f); // Avoid massive GC callings

@@ -3,17 +3,17 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [Header("Map Information")] [SerializeField]
-    private GameObject mapController;
+    
+    [Header("Map Information")]
+    [SerializeField] private GameObject mapController;
 
-    [Header("Player Attributes")] [SerializeField]
-    private float movementCooldown = 0.25f;
-
+    [Header("Player Attributes")]
+    [SerializeField] private float movementCooldown = 0.25f;
     [SerializeField] private float movementSpeed = 0.1f;
 
-    [Header("Text Box")] [SerializeField] private GameObject letterTextBox;
-
-
+    [Header("Text Box")]
+    [SerializeField] private GameObject letterTextBox;
+    
     // Cached references
     private Map _map;
     private UIManager _uiManager;

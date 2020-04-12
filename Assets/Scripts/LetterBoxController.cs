@@ -7,16 +7,18 @@ public class LetterBoxController : MonoBehaviour
 
     private TextMeshProUGUI[] _textBoxes;
     
-    private bool _isShowingLetterText;
-
+    private int _currText = 0;
     private int _lettersToDeliver = 5;
 
+    private bool _isShowingLetterText;
     public bool IsShowingLetterText
     {
         get => _isShowingLetterText;
         set => _isShowingLetterText = value;
     }
 
+    #region TextPool
+    
     private struct TextToShow
     {
         private String _upperText;
@@ -57,9 +59,12 @@ public class LetterBoxController : MonoBehaviour
         new TextToShow("Wish I could read these letter and see how people ", "TALK", " right now."),
         new TextToShow("In this changed world, you need to ", "LEARN", " and adapt. I am really leaving my comfort zone.")
     };
-
-    private int _currText = 0;
     
+    #endregion
+    
+    /// <summary>
+    /// Displays a text structure in the text box.
+    /// </summary>
     public void ShowText()
     {
         gameObject.SetActive(true);
@@ -71,6 +76,9 @@ public class LetterBoxController : MonoBehaviour
         _isShowingLetterText = true;
     }
 
+    /// <summary>
+    /// Makes the text box invisible to the player.
+    /// </summary>
     public void HideText()
     {
         gameObject.SetActive(false);
@@ -78,6 +86,9 @@ public class LetterBoxController : MonoBehaviour
         _currText++;
     }
 
+    /// <summary>
+    /// Checks if the player has already delivered all the letters.
+    /// </summary>
     public bool HasDeliveredAllLetters()
     {
         return _currText == _lettersToDeliver;
