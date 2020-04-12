@@ -1,34 +1,45 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    [Header("Map Information")] [SerializeField]
+    private GameObject mapController;
 
-    [SerializeField] private GameObject mapController;
-    
-    [SerializeField] private float movementCooldown = 0.25f;
+    [Header("Player Attributes")] [SerializeField]
+    private float movementCooldown = 0.25f;
+
     [SerializeField] private float movementSpeed = 0.1f;
 
-    [SerializeField] private GameObject letterTextBox;
+    [Header("Text Box")] [SerializeField] private GameObject letterTextBox;
 
-    private LetterBoxController _letterBoxController;
-    
-    private bool _isMoving;
+
+    // Cached references
     private Map _map;
+    private UIManager _uiManager;
+    private LetterBoxController _letterBoxController;
+
+    private bool _isMoving;
 
     private House _currTouchedHouse;
-    
+
     // Start is called before the first frame update
     void Start()
     {
         _map = mapController.GetComponent<Map>();
+        _uiManager = FindObjectOfType<UIManager>();
         _letterBoxController = letterTextBox.GetComponent<LetterBoxController>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        // Once all the letters are delivered and the last text is not being shown anymore
+        // we can finish the game.
+        if (_letterBoxController.HasDeliveredAllLetters() && !_letterBoxController.IsShowingLetterText)
+        {
+            _uiManager.LoadNextScene();
+        }
 
         // We check if we are currently showing a text from a letter delivery.
         if (_letterBoxController.IsShowingLetterText && Input.GetKeyDown(KeyCode.Space))
@@ -54,7 +65,7 @@ public class Player : MonoBehaviour
 
         if (horizontalMovement != 0f || verticalMovement != 0f)
         {
-            StartCoroutine(Move(new Vector2(horizontalMovement, verticalMovement)));
+            StartCoroutine(TryToMove(new Vector2(horizontalMovement, verticalMovement)));
         }
 
         // If the player is currently touching a house and it has a letter to send,
@@ -68,22 +79,27 @@ public class Player : MonoBehaviour
                 _letterBoxController.ShowText();
             }
         }
-        
     }
 
+    /// <summary>
+    /// Checks if the player can move to the target position.
+    /// </summary>
     private bool CanMove(Vector3 targetPosition)
     {
         return !_map.IsEnvironmentTile(targetPosition);
     }
 
-    private IEnumerator Move(Vector2 direction)
+    /// <summary>
+    /// Based on the player movement, try to reach the target tile.
+    /// </summary>
+    private IEnumerator TryToMove(Vector2 direction)
     {
         Vector2 startingPosition = transform.position;
         Vector2 targetPosition = startingPosition + direction.normalized;
 
         if (!CanMove(targetPosition))
         {
-            yield return BlockMovement(startingPosition, startingPosition);
+            yield return MoveTo(startingPosition, startingPosition);
         }
         else
         {
@@ -91,6 +107,9 @@ public class Player : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Moves the player to the target position on the map.
+    /// </summary>
     private IEnumerator MoveTo(Vector2 startingPosition, Vector2 targetPosition)
     {
         float timer = 0;
@@ -106,12 +125,7 @@ public class Player : MonoBehaviour
         _isMoving = false;
         yield return 0;
     }
-
-    private IEnumerator BlockMovement(Vector2 startingPosition, Vector2 targetPosition)
-    {
-        yield return MoveTo(startingPosition, targetPosition);
-    }
-
+    
     private void OnTriggerEnter2D(Collider2D other)
     {
         _currTouchedHouse = other.gameObject.GetComponent<House>();

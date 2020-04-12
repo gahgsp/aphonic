@@ -8,7 +8,7 @@ public class TypewriterEffect : MonoBehaviour
 
     [SerializeField] private GameObject soundManager;
 
-    // Cached components references.
+    // Cached components references
     private TextMeshProUGUI _screenLabel;
     private AudioSource _audioSource;
 
@@ -45,5 +45,12 @@ public class TypewriterEffect : MonoBehaviour
             // After each sentence, we break the line.
             _screenLabel.text += "<br>";
         }
+        Invoke(nameof(LoadNextSceneAfterFinish), 2f);
+    }
+
+    private void LoadNextSceneAfterFinish()
+    {
+        var uiManager = FindObjectOfType<UIManager>();
+        uiManager.LoadNextScene();
     }
 }

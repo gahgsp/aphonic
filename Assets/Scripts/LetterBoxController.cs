@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -10,6 +8,8 @@ public class LetterBoxController : MonoBehaviour
     private TextMeshProUGUI[] _textBoxes;
     
     private bool _isShowingLetterText;
+
+    private int _lettersToDeliver = 5;
 
     public bool IsShowingLetterText
     {
@@ -51,23 +51,15 @@ public class LetterBoxController : MonoBehaviour
     
     private TextToShow[] _textsToShow =
     {
-        new TextToShow("Sometimes I hear people trying to speak, it is really", "strange", " seeing people struggling with this."),
-        new TextToShow("I can not imagine what happened to", "foreign countries", " as well...")
+        new TextToShow("This gibberish that I hear from inside the house is so ", "STRANGE", "The struggle is more than real..."),
+        new TextToShow("I can not imagine the ", "EFFORT", " that people are putting into writing letters again..."),
+        new TextToShow("I have never thought that I would live in a world without a ", "LANGUAGE", " to speak. What a nightmare!"),
+        new TextToShow("Wish I could read these letter and see how people ", "TALK", " right now."),
+        new TextToShow("In this changed world, you need to ", "LEARN", " and adapt. I am really leaving my comfort zone.")
     };
 
     private int _currText = 0;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    
     public void ShowText()
     {
         gameObject.SetActive(true);
@@ -84,5 +76,10 @@ public class LetterBoxController : MonoBehaviour
         gameObject.SetActive(false);
         _isShowingLetterText = false;
         _currText++;
+    }
+
+    public bool HasDeliveredAllLetters()
+    {
+        return _currText == _lettersToDeliver;
     }
 }
