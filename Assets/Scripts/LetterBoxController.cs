@@ -7,14 +7,15 @@ public class LetterBoxController : MonoBehaviour
 
     private TextMeshProUGUI[] _textBoxes;
     
-    private int _currText = 0;
+    private int _currLetterText = 0;
+    private int _currNPCText = 0;
     private int _lettersToDeliver = 5;
 
-    private bool _isShowingLetterText;
-    public bool IsShowingLetterText
+    private bool _isShowingText;
+    public bool IsShowingText
     {
-        get => _isShowingLetterText;
-        set => _isShowingLetterText = value;
+        get => _isShowingText;
+        set => _isShowingText = value;
     }
 
     #region TextPool
@@ -51,13 +52,20 @@ public class LetterBoxController : MonoBehaviour
         }
     }
     
-    private TextToShow[] _textsToShow =
+    private TextToShow[] _textsFromLettersToShow =
     {
         new TextToShow("This gibberish that I hear from inside the house is so ", "STRANGE", "The struggle is more than real..."),
-        new TextToShow("I can not imagine the ", "EFFORT", " that people are putting into writing letters again..."),
+        new TextToShow("All the voices and I can not hear what they ", "SPEAK", " and this makes me feel really bad."),
         new TextToShow("I have never thought that I would live in a world without a ", "LANGUAGE", " to speak. What a nightmare!"),
-        new TextToShow("Wish I could read these letter and see how people ", "TALK", " right now."),
+        new TextToShow("I wish I could read what is ", "WRITTEN", " in these letters."),
         new TextToShow("In this changed world, you need to ", "LEARN", " and adapt. I am really leaving my comfort zone.")
+    };
+
+    private TextToShow[] _textsFromNPCToShow =
+    {
+        new TextToShow("? ? ? ? ? ? ? ? ?", "ANOTHER", "? ? ? ? ? ? ? ? ?"),
+        new TextToShow("? ? ? ? ? ? ? ? ?", "FAR", "? ? ? ? ? ? ? ? ?"),
+        new TextToShow("? ? ? ? ? ? ? ? ?", "BOUNDARY", "? ? ? ? ? ? ? ? ?")
     };
     
     #endregion
@@ -65,15 +73,28 @@ public class LetterBoxController : MonoBehaviour
     /// <summary>
     /// Displays a text structure in the text box.
     /// </summary>
-    public void ShowText()
+    public void ShowLetterText()
     {
         gameObject.SetActive(true);
         _textBoxes = GetComponentInChildren<Transform>().GetChild(0).GetChild(0)
             .GetComponentsInChildren<TextMeshProUGUI>();
-        _textBoxes[0].text = _textsToShow[_currText].UpperText;
-        _textBoxes[1].text = _textsToShow[_currText].MagicWord;
-        _textBoxes[2].text = _textsToShow[_currText].BottomText;
-        _isShowingLetterText = true;
+        _textBoxes[0].text = _textsFromLettersToShow[_currLetterText].UpperText;
+        _textBoxes[1].text = _textsFromLettersToShow[_currLetterText].MagicWord;
+        _textBoxes[2].text = _textsFromLettersToShow[_currLetterText].BottomText;
+        _isShowingText = true;
+        _currLetterText++;
+    }
+
+    public void ShowNPCText()
+    {
+        gameObject.SetActive(true);
+        _textBoxes = GetComponentInChildren<Transform>().GetChild(0).GetChild(0)
+            .GetComponentsInChildren<TextMeshProUGUI>();
+        _textBoxes[0].text = _textsFromNPCToShow[_currNPCText].UpperText;
+        _textBoxes[1].text = _textsFromNPCToShow[_currNPCText].MagicWord;
+        _textBoxes[2].text = _textsFromNPCToShow[_currNPCText].BottomText;
+        _isShowingText = true;
+        _currNPCText++;
     }
 
     /// <summary>
@@ -82,8 +103,7 @@ public class LetterBoxController : MonoBehaviour
     public void HideText()
     {
         gameObject.SetActive(false);
-        _isShowingLetterText = false;
-        _currText++;
+        _isShowingText = false;
     }
 
     /// <summary>
@@ -91,6 +111,6 @@ public class LetterBoxController : MonoBehaviour
     /// </summary>
     public bool HasDeliveredAllLetters()
     {
-        return _currText == _lettersToDeliver;
+        return _currLetterText == _lettersToDeliver;
     }
 }

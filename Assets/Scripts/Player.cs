@@ -22,6 +22,7 @@ public class Player : MonoBehaviour
     private bool _isMoving;
 
     private House _currTouchedHouse;
+    private NPC _currTouchedNPC;
 
     // Start is called before the first frame update
     void Start()
@@ -36,20 +37,20 @@ public class Player : MonoBehaviour
     {
         // Once all the letters are delivered and the last text is not being shown anymore
         // we can finish the game.
-        if (_letterBoxController.HasDeliveredAllLetters() && !_letterBoxController.IsShowingLetterText)
+        if (_letterBoxController.HasDeliveredAllLetters() && !_letterBoxController.IsShowingText)
         {
             _uiManager.LoadNextScene();
         }
 
         // We check if we are currently showing a text from a letter delivery.
-        if (_letterBoxController.IsShowingLetterText && Input.GetKeyDown(KeyCode.Space))
+        if (_letterBoxController.IsShowingText && Input.GetKeyDown(KeyCode.Space))
         {
             _letterBoxController.HideText();
         }
 
         // We can only move the player again once it reached the destination
         // or there is no text being shown.
-        if (_isMoving || _letterBoxController.IsShowingLetterText)
+        if (_isMoving || _letterBoxController.IsShowingText)
         {
             return;
         }
@@ -76,7 +77,16 @@ public class Player : MonoBehaviour
             if (_currTouchedHouse.IsReceivingLetter)
             {
                 _currTouchedHouse.DeliverLetter();
-                _letterBoxController.ShowText();
+                _letterBoxController.ShowLetterText();
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space) && _currTouchedNPC != null)
+        {
+            if (_currTouchedNPC.HasConversation)
+            {
+                _currTouchedNPC.FinishConversation();
+                _letterBoxController.ShowNPCText();   
             }
         }
     }
@@ -128,11 +138,22 @@ public class Player : MonoBehaviour
     
     private void OnTriggerEnter2D(Collider2D other)
     {
-        _currTouchedHouse = other.gameObject.GetComponent<House>();
+        // We are touching a house...
+        if (other.gameObject.GetComponent<House>() != null)
+        {
+            _currTouchedHouse = other.gameObject.GetComponent<House>();
+        }
+        else
+        {
+            // We are touching a NPC...
+            _currTouchedNPC = other.gameObject.GetComponent<NPC>();
+        }
+        
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
         _currTouchedHouse = null;
+        _currTouchedNPC = null;
     }
 }
